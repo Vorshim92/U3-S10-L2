@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 
-function Footer() {
+function Header() {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid>
@@ -24,4 +24,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default Header;
