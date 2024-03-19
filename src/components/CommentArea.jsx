@@ -1,32 +1,21 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import CommentList from "./CommentList";
 import AddComponent from "./AddComponent";
 
-class CommentArea extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      comments: [],
-      isLoading: false,
-      error: null,
-    };
-  }
+const CommentArea = ({ bookId }) => {
+  const [comments, setComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  componentDidMount() {
-    this.fetchComments();
-  }
+  useEffect(() => {
+    fetchComments();
+  }, [bookId]);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.bookId !== this.props.bookId) {
-      this.fetchComments();
-    }
-  }
-
-  fetchComments = async () => {
-    const { bookId } = this.props;
+  const fetchComments = async () => {
     if (!bookId) return;
 
-    this.setState({ isLoading: true, error: null });
+    setIsLoading(true);
+    setError(null);
 
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWViMTkyMzJkN2IxMTAwMTkwZTc3MjAiLCJpYXQiOjE3MTA3NzIxMTgsImV4cCI6MTcxMTk4MTcxOH0.ujYelJM2JBZx5kusXwT1ZFwUkIB5KFc18o_NOF6FBK4";
     const headers = new Headers();
@@ -41,16 +30,15 @@ class CommentArea extends Component {
         throw new Error(`Failed to fetch comments: ${response.statusText}`);
       }
       const fetchedComments = await response.json();
-      this.setState({ comments: fetchedComments });
+      setComments(fetchedComments);
     } catch (error) {
-      this.setState({ error: error.message });
+      setError(error.message);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
 
-  handleAddComment = async (newComment) => {
-    const { bookId } = this.props;
+  const handleAddComment = async (newComment) => {
     const url = "https://striveschool-api.herokuapp.com/api/comments/";
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWViMTkyMzJkN2IxMTAwMTkwZTc3MjAiLCJpYXQiOjE3MTA3NzIxMTgsImV4cCI6MTcxMTk4MTcxOH0.ujYelJM2JBZx5kusXwT1ZFwUkIB5KFc18o_NOF6FBK4";
     const options = {
@@ -66,26 +54,21 @@ class CommentArea extends Component {
       if (!response.ok) {
         throw new Error(`Failed to add comment: ${response.statusText}`);
       }
-      this.fetchComments();
+      fetchComments();
     } catch (error) {
       console.error("Error adding comment:", error);
     }
   };
 
-  render() {
-    const { comments, isLoading, error } = this.state;
-    const { bookId } = this.props;
-
-    return (
-      <div className="comment-section" id="comment-area">
-        <h2 className="my-3 text-center">COMMENTS AREA</h2>
-        {isLoading && <p>Loading comments...</p>}
-        {error && <p>Error fetching comments: {error}</p>}
-        <AddComponent bookId={bookId} onAddComment={this.handleAddComment} />
-        <CommentList comments={comments} bookID={bookId} />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="comment-section" id="comment-area">
+      <h2 className="my-3 text-center">COMMENTS AREA</h2>
+      {isLoading && <p>Loading comments...</p>}
+      {error && <p>Error fetching comments: {error}</p>}
+      <AddComponent bookId={bookId} onAddComment={handleAddComment} />
+      <CommentList comments={comments} bookID={bookId} />
+    </div>
+  );
+};
 
 export default CommentArea;
