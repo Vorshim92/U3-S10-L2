@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import GenerateCards from "../components/BooklistComponent";
-import { allGenres } from "../components/CardComponent";
 
 const selectedGenre = 0;
 
