@@ -18,7 +18,7 @@ function GenerateCards({ selectedGenre, onBookClick }) {
           .filter((book) => book.title.toLowerCase().includes(searchTerm.toLowerCase()))
           .slice(0, 10)
           .map((book, i) => (
-            <Col className="mb-3" xs={6} key={book.asin}>
+            <Col className="mb-3" xs={6} key={book.asin} data-testid="cardtest">
               <Card style={{ width: "18rem" }}>
                 <Card.Img variant="top" src={book.img} style={{ height: "400px" }} />
                 <Card.Body>
